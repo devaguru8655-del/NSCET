@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IQ ARENA | Engineering Launch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon: #00f2ff;
+            --bg: #050a0f;
+            --secondary: #1a2634;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--neon);
+            font-family: 'Orbitron', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Digital Background Grid */
+        body::after {
+            content: "";
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: linear-gradient(rgba(0, 242, 255, 0.1) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(0, 242, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(500px) rotateX(60deg);
+            top: -50%;
+            z-index: -1;
+            animation: moveGrid 10s linear infinite;
+        }
+
+        @keyframes moveGrid {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+
+        #main-container {
+            width: 80%;
+            max-width: 800px;
+            padding: 40px;
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            background: rgba(5, 10, 15, 0.9);
+            box-shadow: 0 0 50px rgba(0, 242, 255, 0.1);
+        }
+
+        .terminal-text {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        #display-text {
+            font-size: 2.2rem;
+            min-height: 100px;
+            line-height: 1.4;
+            text-shadow: 0 0 10px var(--neon);
+        }
+
+        /* Animated Voice Waveform */
+        .wave-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            height: 80px;
+            margin: 30px 0;
+            display: none; /* Hidden until listening */
+        }
+
+        .bar {
+            width: 8px;
+            height: 10px;
+            background: var(--neon);
+            box-shadow: 0 0 10px var(--neon);
+            animation: bounce 0.6s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { height: 10px; transform: scaleY(1); }
+            to { height: 60px; transform: scaleY(1.5); }
+        }
+
+        .launch-btn {
+            background: transparent;
+            border: 2px solid var(--neon);
+            color: var(--neon);
+            padding: 15px 40px;
+            font-family: 'Orbitron';
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.4s;
+            margin-top: 20px;
+        }
+
+        .launch-btn:hover {
+            background: var(--neon);
+            color: var(--bg);
+            box-shadow: 0 0 30px var(--neon);
+        }
+    </style>
+</head>
+<body>
+
+<div id="main-container">
+    <div class="terminal-text" id="status">// SYSTEM: IDLE // AUTH: REQUIRED</div>
+    
+    <div id="display-text">READY TO LAUNCH IQ ARENA</div>
+
+    <div class="wave-box" id="waveBox">
+        <div class="bar" style="animation-delay: 0.0s"></div>
+        <div class="bar" style="animation-delay: 0.1s"></div>
+        <div class="bar" style="animation-delay: 0.2s"></div>
+        <div class="bar" style="animation-delay: 0.3s"></div>
+        <div class="bar" style="animation-delay: 0.4s"></div>
+    </div>
+
+    <button class="launch-btn" id="initBtn" onclick="runInauguration()">INITIALIZE SYSTEM</button>
+</div>
+
+<script>
+    const display = document.getElementById('display-text');
+    const status = document.getElementById('status');
+    const wave = document.getElementById('waveBox');
+    const btn = document.getElementById('initBtn');
+
+    // Speech Setup
+    const synth = window.speechSynthesis;
+    const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+    const recognition = new SpeechRecognition();
+
+    function speak(text, nextAction) {
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.pitch = 0.85; // Deep tech voice
+        msg.rate = 0.95;
+        msg.onend = nextAction;
+        display.innerText = text.toUpperCase();
+        synth.speak(msg);
+    }
+
+    function runInauguration() {
+        btn.style.display = 'none';
+        status.innerText = "// SYSTEM: ACTIVE // RUNNING MODULES...";
+        
+        // Phase 1: Welcome
+        speak("Welcome. Please tell me your name.", () => {
+            status.innerText = "// SYSTEM: LISTENING...";
+            wave.style.display = 'flex';
+            recognition.start();
+        });
+    }
+
+    recognition.onresult = (event) => {
+        const guestName = event.results[0][0].transcript;
+        wave.style.display = 'none';
+        status.innerText = "// IDENTITY: " + guestName.toUpperCase();
+
+        // Phase 2: Introduction
+        setTimeout(() => {
+            speak(`Hi ${guestName}, I am IQ Arena. I have been engineered to build students strongly and powerfully.`, () => {
+                
+                // Phase 3: Technical Description
+                setTimeout(() => {
+                    speak("I am now synchronizing with the NSCE T servers to provide real-time learning and competitive excellence. Welcome to the IQ Arena.", () => {
+                        
+                        // Phase 4: Final Launch
+                        status.innerText = "// SYSTEM: DEPLOYING LIVE...";
+                        setTimeout(() => {
+                            speak("Opening system in 3. 2. 1. Launch.", () => {
+                                document.body.style.background = "#fff";
+                                setTimeout(() => {
+                                    window.location.href = "https://nscet.org/iqarena/";
+                                }, 300);
+                            });
+                        }, 1000);
+                    });
+                }, 1000);
+            });
+        }, 1000);
+    };
+
+    recognition.onerror = () => {
+        speak("Voice data corrupted. Manual override. Launching IQ Arena now.", () => {
+            window.location.href = "https://nscet.org/iqarena/";
+        });
+    };
+</script>
+
+</body>
+</html>
